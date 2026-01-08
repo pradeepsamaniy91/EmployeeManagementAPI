@@ -1,12 +1,13 @@
 ﻿using EmployeeManagement.Domain.Entities;
 using EmployeeManagement.Domain.Interfaces;
+using EmployeeManagement.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
 using System.Linq.Expressions;
 
 namespace EmployeeManagement.Application.Services;
 
-public class EmployeeService : IEmployeeRepository, IUserRepository
+public class EmployeeService : IEmployeeRepository
 {
     private readonly EmployeeManagementContext _context;
     public EmployeeService(EmployeeManagementContext context)
@@ -31,21 +32,26 @@ public class EmployeeService : IEmployeeRepository, IUserRepository
         }
     }
 
-    Task<User?> IUserRepository.CreateUser(User user, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-
     public async Task<Employee?> GetEmployeeByIdAsync(string emailId, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrWhiteSpace(emailId))
-            throw new ArgumentException("emailId must be provided", nameof(emailId));
+        Employee employee = null;
+        try
+        {
 
-        // Respect the caller's CancellationToken and do not swallow cancellation exceptions.
-        // Let EF Core observe the token so the DB call can be cancelled by the caller (e.g., HttpContext.RequestAborted).
+            return await _context.Employees
+                                 .FirstOrDefaultAsync(e => e.EmailId == emailId, cancellationToken);
+                                 
+        }
+        catch(Exception ex)
+        {
+            return employee;
+        }
+    }
+
+    public async Task<Employee?> GetAsync(long id, CancellationToken cancellationToken=default)
+    {
         return await _context.Employees
-                             .FirstOrDefaultAsync(e => e.EmailId == emailId, cancellationToken)
-                             .ConfigureAwait(false);
+                                .FirstOrDefaultAsync(e => e.EmpId == id);
     }
 
     Task<Employee> IEmployeeRepository.GetEmployees()
@@ -53,27 +59,7 @@ public class EmployeeService : IEmployeeRepository, IUserRepository
         throw new NotImplementedException();
     }
 
-    Task<User?> IUserRepository.GetUserAsync()
-    {
-        throw new NotImplementedException();
-    }
-
-    async Task<User?> IUserRepository.GetUserById(long id, CancellationToken cancellationToken)
-    {
-        return await _context.Users.FirstOrDefaultAsync(u => u.EmpId == id, cancellationToken);
-    }
-
-    Task<List<User?>> IUserRepository.GetUsersByIDAndPasswordAsync(string userName, string password, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-
-    Task<Employee> IEmployeeRepository.UpdateEmployeeAsync(Employee employee, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-
-    Task<Employee?> IEmployeeRepository.CreateEmployeeAsync(Employee employee, CancellationToken cancellationToken)
+    Task<Employee?> IEmployeeRepository.UpdateEmployeeAsync(Employee employee, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }

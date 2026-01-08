@@ -12,9 +12,10 @@ namespace EmployeeManagement.Application.Queries.GetEmployeeByID
     {
 
         private readonly IEmployeeRepository _employeeRepository;
+
         public GetEmployeeByIdQueryHandler(IEmployeeRepository employeeRepository)
         {
-            _employeeRepository = employeeRepository;
+            _employeeRepository = employeeRepository?? throw new ArgumentNullException(nameof(employeeRepository));
         }
         public async Task<Result<Employee?>> Handle(GetEmployeeByIdQuery request, CancellationToken cancellationToken)
         {

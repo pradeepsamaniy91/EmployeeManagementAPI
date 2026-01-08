@@ -11,11 +11,11 @@ namespace EmployeeManagement.Application.Dto.EmployeeDtos
         {
 
             RuleFor(x => x.FirstName).NotEmpty().MaximumLength(50);
-            //RuleFor(x => x.EmailId).EmailAddress();
-            //RuleFor(x => x.BillRate).InclusiveBetween(18, 65);
-            //RuleFor(x => x.ContactNo).InclusiveBetween(18, 65);
-            //RuleFor(x => x.PayRate).InclusiveBetween(18, 65);
-            //RuleFor(x => x.PayRate).InclusiveBetween(18, 65);
+            RuleFor(x => x.EmailId).EmailAddress();
+            RuleFor(x => x.BillRate).InclusiveBetween(18, 65);
+            RuleFor(x => x.ContactNo).InclusiveBetween(18, 65);
+            RuleFor(x => x.PayRate).InclusiveBetween(18, 65);
+            RuleFor(x => x.PayRate).InclusiveBetween(18, 65);
         }
     }
 

@@ -1,20 +1,15 @@
 ﻿using EmployeeManagement.Application.Dto.EmployeeDtos;
-using EmployeeManagement.Domain.Entities;
+using EmployeeManagement.Domain.ValueObjects;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Input;
 
-namespace EmployeeManagement.Application.Commands.AddEmployee
+namespace EmployeeManagement.Application.Commands.AddEmployee;
+
+public class CreateEmployeeCommand : IRequest<Result>
 {
-    public class CreateEmployeeCommand : IRequest<Employee>
+    // Ensure the property name matches what you are assigning in the constructor
+    public CreateEmployeeCommand(EmployeeDto employee)
     {
-        // Ensure the property name matches what you are assigning in the constructor
-        public CreateEmployeeCommand(Employee employee)
-        {
-            Employee = employee;
-        }
-        public Employee Employee { get; set; }
+        Employee = employee;
     }
+    public EmployeeDto Employee { get; set; }
 }

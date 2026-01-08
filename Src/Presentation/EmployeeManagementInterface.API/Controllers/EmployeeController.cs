@@ -30,11 +30,11 @@ namespace EmployeeManagementInterface.API.Controllers
                 return BadRequest(validationResult);
             }
 
-            var employee = EmployeeMapper.ToEmployee(request);
+            
 
-            var employeeResult = _mediator.Send(new CreateEmployeeCommand(employee));
+            var employeeResult =await _mediator.Send(new CreateEmployeeCommand(request));
 
-            return Ok("Success");
+            return employeeResult.IsSuccess ? Ok("Employee created successfully"): BadRequest(employeeResult);
         }
     }
 }

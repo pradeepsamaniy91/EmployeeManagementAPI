@@ -1,5 +1,6 @@
 ﻿using EmployeeManagement.Domain.Entities;
 using EmployeeManagement.Domain.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -27,10 +28,13 @@ namespace EmployeeManagement.Application.Services
             throw new NotImplementedException();
         }
 
-        async Task<User?> IUserRepository.GetUserById(long empId, CancellationToken cancellationToken)
+        public async Task<User?> GetUserById(long empId, CancellationToken cancellationToken)
         {
-            return  _context.Users.Where(u=>u.EmpId== empId).FirstOrDefault();
+            // Use FirstOrDefaultAsync and pass the cancellationToken
+            return await _context.Users
+                .FirstOrDefaultAsync(u => u.EmpId == empId, cancellationToken);
         }
+
 
         Task<List<User?>> IUserRepository.GetUsersByIDAndPasswordAsync(string userName, string password, CancellationToken cancellationToken)
         {

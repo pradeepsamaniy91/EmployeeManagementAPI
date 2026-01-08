@@ -59,7 +59,6 @@
     <Folder Include="ConfigSettings\" />
     <Folder Include="Exceptions\" />
     <Folder Include="Factory\" />
-    <Folder Include="Interfaces\" />
   </ItemGroup>
 
   <ItemGroup>

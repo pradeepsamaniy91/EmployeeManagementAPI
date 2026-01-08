@@ -1,5 +1,6 @@
 ﻿using EmployeeManagement.Domain.Entities;
 using EmployeeManagement.Domain.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -9,20 +10,44 @@ namespace EmployeeManagement.Infrastructure.Persistence.Repositories
 {
     public class EmployeeRepository : IEmployeeRepository
     {
-        private readonly IEmployeeRepository _employeeRepository;
+        private readonly EmployeeManagementContext _context;
         //private readonly ILogger<> _logger;
-        public EmployeeRepository(IEmployeeRepository employeeRepository)
+        public EmployeeRepository(EmployeeManagementContext context)
         {
-            _employeeRepository = employeeRepository?? throw new ArgumentNullException(nameof(employeeRepository));
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
-        Task<Employee> IEmployeeRepository.CreateEmployeeAsync(Employee employee, CancellationToken cancellationToken)
+        public async Task<Employee> CreateEmployeeAsync(Employee employee)
         {
-            throw new NotImplementedException();
+            await _context.Employees.AddAsync(employee);
+            await _context.SaveChangesAsync();
+            return employee;
         }
-
-        Task<Employee> IEmployeeRepository.GetEmployeeByIdAsync(string emailId, CancellationToken cancellationToken)
+        public async Task<Employee?> GetAsync(long empId, CancellationToken cancellationToken=default)
         {
-            throw new NotImplementedException();
+            // Use .AsNoTracking() for read-only queries to improve performance.
+            return await _context.Employees
+                .AsNoTracking()
+                .FirstOrDefaultAsync(e => e.EmpId == empId, cancellationToken);
+        }
+        public async Task<Employee?> GetEmployeeByIdAsync(string emailId, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                return await _context.Employees
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(e => e.EmailId == emailId, cancellationToken);
+            }
+            catch (OperationCanceledException)
+            {
+                // 2026 Best Practice: Task was canceled by the caller/user.
+                // Return null or rethrow based on your business logic.
+                return null;
+            }
+            catch (Exception ex)
+            {
+                // Log actual database/logic errors here
+                throw;
+            }
         }
 
         Task<Employee> IEmployeeRepository.GetEmployees()
@@ -30,7 +55,7 @@ namespace EmployeeManagement.Infrastructure.Persistence.Repositories
             throw new NotImplementedException();
         }
 
-        Task<Employee> IEmployeeRepository.UpdateEmployeeAsync(Employee employee, CancellationToken cancellationToken)
+        Task<Employee> IEmployeeRepository.UpdateEmployeeAsync(Employee employee, CancellationToken cancellationToken=default)
         {
             throw new NotImplementedException();
         }

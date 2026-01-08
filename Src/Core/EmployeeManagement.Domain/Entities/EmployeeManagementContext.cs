@@ -1,21 +1,18 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 
 namespace EmployeeManagement.Domain.Entities;
 
 public partial class EmployeeManagementContext : DbContext
 {
-    private readonly IConfiguration _configuration;
-    public EmployeeManagementContext(DbContextOptions<EmployeeManagementContext> options, IConfiguration configuration)
+    public EmployeeManagementContext()
+    {
+    }
+
+    public EmployeeManagementContext(DbContextOptions<EmployeeManagementContext> options)
         : base(options)
     {
-        _configuration = configuration;
-    }
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.UseSqlServer(_configuration.GetConnectionString("DbConnection"));
     }
 
     public virtual DbSet<Employee> Employees { get; set; }
@@ -24,13 +21,15 @@ public partial class EmployeeManagementContext : DbContext
 
     public virtual DbSet<MonthlyAttendanceSummary> MonthlyAttendanceSummaries { get; set; }
 
-    public virtual DbSet<TimesheetPeriod> TimesheetPeriods { get; set; }
-
-    public virtual DbSet<TimesheetSummary> TimesheetSummaries { get; set; }
-
     public virtual DbSet<User> Users { get; set; }
 
     public virtual DbSet<UserRole> UserRoles { get; set; }
+
+    public virtual DbSet<WorkLog> WorkLogs { get; set; }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer("Data Source=LAPTOP-4V0QV0VF\\SQLEXPRESS;Initial Catalog=EmployeeManagement;Integrated Security=True;MultipleActiveResultSets=True;Encrypt=False");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -43,6 +42,9 @@ public partial class EmployeeManagementContext : DbContext
             entity.HasIndex(e => e.EmailId, "UQ__Employee__A9D10534CB726610").IsUnique();
 
             entity.Property(e => e.Client).HasMaxLength(50);
+            entity.Property(e => e.CreatedBy)
+                .HasMaxLength(10)
+                .IsFixedLength();
             entity.Property(e => e.CreatedOn).HasColumnType("datetime");
             entity.Property(e => e.EmailId).HasMaxLength(256);
             entity.Property(e => e.EmployeeType)
@@ -56,6 +58,8 @@ public partial class EmployeeManagementContext : DbContext
                 .IsUnicode(false)
                 .IsFixedLength();
             entity.Property(e => e.LastName).HasMaxLength(150);
+            entity.Property(e => e.LastUpdatedBy).HasMaxLength(50);
+            entity.Property(e => e.Password).HasMaxLength(32);
             entity.Property(e => e.Reference).HasMaxLength(50);
             entity.Property(e => e.Status).HasDefaultValue(true, "DF__Employee__IsActi__5070F446");
             entity.Property(e => e.UpdatedOn).HasColumnType("datetime");
@@ -81,40 +85,6 @@ public partial class EmployeeManagementContext : DbContext
                 .ToView("MonthlyAttendanceSummary");
         });
 
-        modelBuilder.Entity<TimesheetPeriod>(entity =>
-        {
-            entity.HasKey(e => e.PeriodId).HasName("PK__Timeshee__E521BB16FCE06D93");
-
-            entity.HasIndex(e => new { e.PeriodType, e.StartDate, e.EndDate }, "UQ__Timeshee__9A2D6D9D47E224E8").IsUnique();
-
-            entity.Property(e => e.PeriodType).HasMaxLength(20);
-        });
-
-        modelBuilder.Entity<TimesheetSummary>(entity =>
-        {
-            entity.HasKey(e => e.SummaryId).HasName("PK__Timeshee__DAB10E2FDF074D1C");
-
-            entity.HasIndex(e => new { e.PeriodId, e.UserId }, "UQ__Timeshee__345937D36DC599BD").IsUnique();
-
-            entity.Property(e => e.Status)
-                .HasMaxLength(20)
-                .HasDefaultValue("Open", "DF__Timesheet__Statu__40058253");
-
-            entity.HasOne(d => d.ApprovedByUser).WithMany(p => p.TimesheetSummaryApprovedByUsers)
-                .HasForeignKey(d => d.ApprovedByUserId)
-                .HasConstraintName("FK__Timesheet__Appro__40F9A68C");
-
-            entity.HasOne(d => d.Period).WithMany(p => p.TimesheetSummaries)
-                .HasForeignKey(d => d.PeriodId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Timesheet__Perio__3D2915A8");
-
-            entity.HasOne(d => d.User).WithMany(p => p.TimesheetSummaryUsers)
-                .HasForeignKey(d => d.UserId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Timesheet__UserI__3E1D39E1");
-        });
-
         modelBuilder.Entity<User>(entity =>
         {
             entity.HasKey(e => e.UserId).HasName("PK__Users__1788CC4C9C5CE200");
@@ -128,9 +98,6 @@ public partial class EmployeeManagementContext : DbContext
                 .HasMaxLength(256)
                 .HasDefaultValue("unique", "DF_Users_Email");
             entity.Property(e => e.IsActive).HasDefaultValue(true, "DF__Users__IsActive__367C1819");
-            entity.Property(e => e.Password)
-                .HasMaxLength(50)
-                .IsUnicode(false);
 
             entity.HasOne(d => d.UserType).WithMany(p => p.Users)
                 .HasForeignKey(d => d.UserTypeId)
@@ -144,6 +111,22 @@ public partial class EmployeeManagementContext : DbContext
             entity.Property(e => e.UserType)
                 .HasMaxLength(20)
                 .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<WorkLog>(entity =>
+        {
+            entity.HasKey(e => e.WorkLogId).HasName("PK__WorkLogs__FE542C22127C3B69");
+
+            entity.HasIndex(e => new { e.UserId, e.WorkDate }, "UQ_WorkLogs_UserDate").IsUnique();
+
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(sysutcdatetime())", "DF__WorkLogs__Create__7E02B4CC");
+            entity.Property(e => e.Description).HasMaxLength(500);
+            entity.Property(e => e.HoursWorked).HasColumnType("decimal(5, 2)");
+
+            entity.HasOne(d => d.User).WithMany(p => p.WorkLogs)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_WorkLogs_Users");
         });
 
         OnModelCreatingPartial(modelBuilder);

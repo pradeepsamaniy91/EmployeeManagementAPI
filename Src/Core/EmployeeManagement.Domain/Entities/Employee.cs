@@ -23,6 +23,8 @@ public partial class Employee
 
     public string? EmployeeType { get; set; }
 
+    public string? Password { get; set; }
+
     public int BillRate { get; set; }
 
     public int PayRate { get; set; }
@@ -34,6 +36,10 @@ public partial class Employee
     public DateOnly HireDate { get; set; }
 
     public DateOnly? EndDate { get; set; }
+
+    public string? CreatedBy { get; set; }
+
+    public string? LastUpdatedBy { get; set; }
 
     public DateTime CreatedOn { get; set; }
 

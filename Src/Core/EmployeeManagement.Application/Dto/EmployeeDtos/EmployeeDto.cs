@@ -28,6 +28,7 @@ public class EmployeeDto
     public string? Client { get; set; }
 
     public string? Reference { get; set; }
+    public int  UserTypeId { get; set; }
 
     public DateOnly HireDate { get; set; }
 

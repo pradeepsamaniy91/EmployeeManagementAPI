@@ -8,6 +8,7 @@ using EmployeeManagement.Infrastructure.Persistence;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using EmployeeManagement.Infrastructure.Extension;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
@@ -17,14 +18,17 @@ builder.Services.AddMediatR(cfg =>
 });
 
 builder.Services.AddControllers();
-//builder.Services.AddDbContext<EmployeeManagementContext>(options =>
-//    options.UseSqlServer(builder.Configuration.GetConnectionString("DbConnection")));
+string constr = builder.Configuration.GetConnectionString("DbConnection");
+//builder.Services.AddDbContext<EmployeeManagementContext>(options => {
+//    options.UseSqlServer(constr);
+//}, ServiceLifetime.Scoped);
 //IOC
-builder.Services.AddDbContext<EmployeeManagementContext>();
+
 builder.Services.EmployeeManagementDependencies();
+builder.Services.AddInfaDependencies(constr);
 
 // Program.cs or Startup.cs
- // registers Scoped by default
+// registers Scoped by default
 
 //Add Policy
 builder.Services.AddCors(options => options.AddPolicy("Corepolicy1", builder =>

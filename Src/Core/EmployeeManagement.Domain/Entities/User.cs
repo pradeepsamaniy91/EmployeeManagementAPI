@@ -15,13 +15,9 @@ public partial class User
 
     public bool IsActive { get; set; }
 
-    public string? Password { get; set; }
-
     public int? UserTypeId { get; set; }
 
-    public virtual ICollection<TimesheetSummary> TimesheetSummaryApprovedByUsers { get; set; } = new List<TimesheetSummary>();
-
-    public virtual ICollection<TimesheetSummary> TimesheetSummaryUsers { get; set; } = new List<TimesheetSummary>();
-
     public virtual UserRole? UserType { get; set; }
+
+    public virtual ICollection<WorkLog> WorkLogs { get; set; } = new List<WorkLog>();
 }
