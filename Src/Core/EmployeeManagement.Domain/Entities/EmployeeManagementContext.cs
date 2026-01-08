@@ -119,9 +119,10 @@ public partial class EmployeeManagementContext : DbContext
 
             entity.HasIndex(e => new { e.UserId, e.WorkDate }, "UQ_WorkLogs_UserDate").IsUnique();
 
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(sysutcdatetime())", "DF__WorkLogs__Create__7E02B4CC");
-            entity.Property(e => e.Description).HasMaxLength(500);
+            entity.Property(e => e.CreatedOn).HasDefaultValueSql("(sysutcdatetime())", "DF__WorkLogs__Create__7E02B4CC");
+            entity.Property(e => e.Description).HasMaxLength(1000);
             entity.Property(e => e.HoursWorked).HasColumnType("decimal(5, 2)");
+            entity.Property(e => e.UpdatedOn).HasDefaultValueSql("(sysutcdatetime())", "DF_WorkLogs_CreatedOn1");
 
             entity.HasOne(d => d.User).WithMany(p => p.WorkLogs)
                 .HasForeignKey(d => d.UserId)

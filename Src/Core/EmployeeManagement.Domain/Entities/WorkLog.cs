@@ -19,7 +19,9 @@ public partial class WorkLog
 
     public long? UpdatedByUserId { get; set; }
 
-    public DateTime CreatedAt { get; set; }
+    public DateTime CreatedOn { get; set; }
+
+    public DateTime? UpdatedOn { get; set; }
 
     public virtual User User { get; set; } = null!;
 }

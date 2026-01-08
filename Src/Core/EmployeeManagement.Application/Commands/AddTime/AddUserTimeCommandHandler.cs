@@ -22,9 +22,11 @@ namespace EmployeeManagement.Application.Commands.AddTime
         public async Task<Result> Handle(AddUserTimeCommand request, CancellationToken cancellationToken)
         {
             var workLogStatus= await _timesheet.GetTimeByUserIDandWorkDateAsync(request.AddUserTimeDto.userId,request.AddUserTimeDto.Date, cancellationToken);
-            if(workLogStatus)
+            if(workLogStatus!=null)
             {
-                return Result.Failure("Worklog already exist for the user on the given date.");
+                var updatedworklog=WorkLogsMapper.ToWorkLogUpdate(request.AddUserTimeDto, workLogStatus);
+                var worklogstatus=await _timesheet.UpdateUserTimeAsync(updatedworklog,cancellationToken);
+                return Result.Failure("successfully updated");
             }
             var worklogMapper = WorkLogsMapper.ToWorkLog(request.AddUserTimeDto);
             WorkLog worklog =await _timesheet.AddUserTimeAsync(worklogMapper, cancellationToken);

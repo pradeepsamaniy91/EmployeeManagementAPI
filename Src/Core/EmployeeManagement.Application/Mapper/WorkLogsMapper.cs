@@ -11,13 +11,22 @@ namespace EmployeeManagement.Application.Mapper
         public static WorkLog ToWorkLog(AddUserTimeDto addUserTimeDto)
         {
             return new WorkLog {
-                CreatedAt = DateTime.Now, 
+                CreatedOn = DateTime.Now, 
                 CreatedByUserId = addUserTimeDto.CreatedByUserID, 
                 Description = addUserTimeDto.Description, 
                 HoursWorked = addUserTimeDto.HoursWorked, 
                 UserId = addUserTimeDto.userId, 
                 WorkDate = addUserTimeDto.Date,
             };
+        }
+        public static WorkLog ToWorkLogUpdate(AddUserTimeDto addUserTimeDto, WorkLog workLog)
+        {
+
+            workLog.Description = addUserTimeDto.Description;
+            workLog.HoursWorked = addUserTimeDto.HoursWorked;
+            workLog.UpdatedOn =Convert.ToDateTime(DateTime.Now);
+            workLog.UpdatedByUserId = addUserTimeDto.UpdatedByUserId;
+            return workLog;
         }
     }
 }

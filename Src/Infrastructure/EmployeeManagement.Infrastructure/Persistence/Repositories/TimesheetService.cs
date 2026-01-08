@@ -70,14 +70,14 @@ namespace EmployeeManagement.Infrastructure.Persistence.Repositories
             }).ToList();
             return pivotedData;
         }
-        public async Task<bool> GetTimeByUserIDandWorkDateAsync(long userId, DateOnly workDate, CancellationToken cancellationToken)
+        public async Task<WorkLog?> GetTimeByUserIDandWorkDateAsync(long userId, DateOnly workDate, CancellationToken cancellationToken)
         {
             return await _context.WorkLogs
-                        .AnyAsync(w => w.UserId == userId && w.WorkDate == workDate, cancellationToken);
-
+                .FirstOrDefaultAsync(w => w.UserId == userId && w.WorkDate == workDate, cancellationToken);
         }
 
-       public async Task<WorkLog> AddUserTimeAsync(WorkLog workLog, CancellationToken cancellationToken)
+
+        public async Task<WorkLog> AddUserTimeAsync(WorkLog workLog, CancellationToken cancellationToken)
         {
            await _context.AddAsync(workLog);
            await _context.SaveChangesAsync();
@@ -89,9 +89,12 @@ namespace EmployeeManagement.Infrastructure.Persistence.Repositories
             throw new NotImplementedException();
         }
 
-        Task<bool> ITimeSheet.UpdateUserTimeAsync(WorkLog workLog, CancellationToken cancellationToken)
+        public async Task<WorkLog?> UpdateUserTimeAsync(WorkLog workLog, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            _context.WorkLogs.Update(workLog);
+            await _context.SaveChangesAsync(cancellationToken);
+
+            return workLog;
         }
     }
 }
