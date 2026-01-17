@@ -1,14 +1,16 @@
 using EmployeeManagement.Application.Dto.EmployeeDtos;
+using EmployeeManagement.Application.Exceptions.CustomExceptionMiddleware;
 using EmployeeManagement.Application.Extensions;
 using EmployeeManagement.Application.Queries.GetEmployeeByID;
 using EmployeeManagement.Application.Services;
 using EmployeeManagement.Domain.Entities;
 using EmployeeManagement.Domain.Interfaces;
+using EmployeeManagement.Infrastructure.Extension;
 using EmployeeManagement.Infrastructure.Persistence;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using EmployeeManagement.Infrastructure.Extension;
+using NLog.Web;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
@@ -18,11 +20,23 @@ builder.Services.AddMediatR(cfg =>
 });
 
 builder.Services.AddControllers();
+
 string constr = builder.Configuration.GetConnectionString("DbConnection");
-//builder.Services.AddDbContext<EmployeeManagementContext>(options => {
-//    options.UseSqlServer(constr);
-//}, ServiceLifetime.Scoped);
+builder.Services.AddDbContext<EmployeeManagementContext>(options =>
+{
+    options.UseSqlServer(constr, sqloptions => sqloptions.EnableRetryOnFailure(
+
+        maxRetryCount: 5,              // number of retries
+            maxRetryDelay: TimeSpan.FromSeconds(10), // delay between retries
+            errorNumbersToAdd: null));
+}, ServiceLifetime.Scoped);
 //IOC
+builder.Host.UseNLog();
+builder.Services.AddLogging(loggingbuilders =>
+{
+    loggingbuilders.ClearProviders();
+    loggingbuilders.AddNLogWeb();
+});
 
 builder.Services.EmployeeManagementDependencies();
 builder.Services.AddInfaDependencies(constr);
@@ -31,12 +45,15 @@ builder.Services.AddInfaDependencies(constr);
 // registers Scoped by default
 
 //Add Policy
-builder.Services.AddCors(options => options.AddPolicy("Corepolicy1", builder =>
+builder.Services.AddCors(options =>
 {
-    builder.AllowAnyOrigin()
-        .AllowAnyHeader()
-        .AllowAnyMethod();
-}));
+    options.AddPolicy("AllowAll",
+        policy => policy
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader());
+});
+
 
 
 builder.Services.AddEndpointsApiExplorer();
@@ -54,20 +71,18 @@ builder.Services.AddValidatorsFromAssemblyContaining<EmployeeDtoValidator>();
 builder.Services.AddScoped<IValidator<EmployeeDto>, EmployeeDtoValidator>();
 
 var app = builder.Build();
-
+ExceptionHandlerMiddlewareExtensions.UseCustomExceptionHandMethod(app);
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-    app.UseSwagger();   // Serves the JSON endpoint
-    app.UseSwaggerUI();
-}
 
-app.UseCors("Corepolicy1");
+}
+app.UseSwagger();   // Serves the JSON endpoint
+app.UseSwaggerUI();
+app.UseCors("AllowAll");
 app.UseHttpsRedirection();
 app.MapControllers();
-
-
 app.Run();
 
 

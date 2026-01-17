@@ -4,15 +4,12 @@
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>9ccdb59f-bb0c-4a59-9542-508412c1ca76</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="10.1.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="ModelsView\" />
   </ItemGroup>
 
   <ItemGroup>

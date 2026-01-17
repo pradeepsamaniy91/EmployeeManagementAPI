@@ -57,7 +57,6 @@
 
   <ItemGroup>
     <Folder Include="ConfigSettings\" />
-    <Folder Include="Exceptions\" />
     <Folder Include="Factory\" />
   </ItemGroup>
 
@@ -65,6 +64,8 @@
     <PackageReference Include="FluentValidation" Version="12.1.1" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
     <PackageReference Include="MediatR" Version="14.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.3.9" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.1">
       <PrivateAssets>all</PrivateAssets>
@@ -76,6 +77,8 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="NLog" Version="6.0.7" />
+    <PackageReference Include="NLog.Web.AspNetCore" Version="6.1.0" />
   </ItemGroup>
 
   <ItemGroup>

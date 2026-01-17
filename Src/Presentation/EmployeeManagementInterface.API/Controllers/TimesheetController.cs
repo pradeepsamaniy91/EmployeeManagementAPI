@@ -17,17 +17,23 @@ namespace EmployeeManagementInterface.API.Controllers
     {
         private readonly IMediator _mediator;
         private readonly IValidator<AddUserTimeDto> _validator;
-        public TimesheetController(IMediator mediator, IValidator<AddUserTimeDto> validator)
+        private readonly ILogger<TimesheetController> _iLogger;
+        public TimesheetController(IMediator mediator, IValidator<AddUserTimeDto> validator, ILogger<TimesheetController> iLogger)
         {
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
             _validator = validator ?? throw new ArgumentNullException(nameof(validator));
+            _iLogger = iLogger;
         }
 
         [HttpGet("EmployeeByEmailId")]
         public async Task<IActionResult> Get(string emailAddress)
         {
+            _iLogger.LogInformation("Fetching employee details for email: {EmailAddress}", emailAddress);
+
             var employeeResult = await _mediator.Send(new GetEmployeeByIdQuery(emailAddress));
-            
+
+            _iLogger.LogInformation("Fetching employee details for email: {response}", employeeResult);
+
             return employeeResult.IsSuccess? Ok(employeeResult.Value): BadRequest(employeeResult.Error);
         }
         [HttpGet("Timesheet")]
