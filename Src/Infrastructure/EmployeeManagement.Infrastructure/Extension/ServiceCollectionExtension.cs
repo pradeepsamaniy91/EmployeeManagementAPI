@@ -22,6 +22,7 @@ public static class ServiceCollectionExtension
         services.AddScoped<EmployeeManagementContext>();
         services.AddScoped<IEmployeeRepository, EmployeeRepository>();
         services.AddScoped<ITimeSheet, TimesheetService>();
+        services.AddScoped<ITokenService, TokenService>();
 
         return services;
     }

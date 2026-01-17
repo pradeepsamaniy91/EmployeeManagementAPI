@@ -29,6 +29,10 @@ public partial class EmployeeManagementContext : DbContext
 
     public virtual DbSet<WorkLog> WorkLogs { get; set; }
 
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer("Data Source=LAPTOP-4V0QV0VF\\SQLEXPRESS;Initial Catalog=EmployeeManagement;Integrated Security=True;MultipleActiveResultSets=True;Encrypt=False");
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Employee>(entity =>
@@ -85,18 +89,17 @@ public partial class EmployeeManagementContext : DbContext
 
         modelBuilder.Entity<RefreshToken>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__RefreshT__3213E83F758EF2C9");
-
             entity.ToTable("RefreshToken");
 
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.EmpId).HasColumnName("EmpID");
+            entity.HasIndex(e => e.EmailId, "UQ__RefreshT__7ED91AEE46F04E71").IsUnique();
+
+            entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.EmailId)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("EmailID");
             entity.Property(e => e.RefreshToken1).HasColumnName("RefreshToken");
             entity.Property(e => e.RefreshTokenExpiryTime).HasColumnType("datetime");
-
-            entity.HasOne(d => d.Emp).WithMany(p => p.RefreshTokens)
-                .HasForeignKey(d => d.EmpId)
-                .HasConstraintName("FK_empid");
         });
 
         modelBuilder.Entity<User>(entity =>

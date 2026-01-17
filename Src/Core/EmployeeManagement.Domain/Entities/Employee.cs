@@ -44,6 +44,4 @@ public partial class Employee
     public DateTime CreatedOn { get; set; }
 
     public DateTime? UpdatedOn { get; set; }
-
-    public virtual ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
 }
