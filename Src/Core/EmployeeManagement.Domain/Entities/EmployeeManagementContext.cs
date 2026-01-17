@@ -21,6 +21,8 @@ public partial class EmployeeManagementContext : DbContext
 
     public virtual DbSet<MonthlyAttendanceSummary> MonthlyAttendanceSummaries { get; set; }
 
+    public virtual DbSet<RefreshToken> RefreshTokens { get; set; }
+
     public virtual DbSet<User> Users { get; set; }
 
     public virtual DbSet<UserRole> UserRoles { get; set; }
@@ -79,6 +81,22 @@ public partial class EmployeeManagementContext : DbContext
             entity
                 .HasNoKey()
                 .ToView("MonthlyAttendanceSummary");
+        });
+
+        modelBuilder.Entity<RefreshToken>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__RefreshT__3213E83F758EF2C9");
+
+            entity.ToTable("RefreshToken");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.EmpId).HasColumnName("EmpID");
+            entity.Property(e => e.RefreshToken1).HasColumnName("RefreshToken");
+            entity.Property(e => e.RefreshTokenExpiryTime).HasColumnType("datetime");
+
+            entity.HasOne(d => d.Emp).WithMany(p => p.RefreshTokens)
+                .HasForeignKey(d => d.EmpId)
+                .HasConstraintName("FK_empid");
         });
 
         modelBuilder.Entity<User>(entity =>
