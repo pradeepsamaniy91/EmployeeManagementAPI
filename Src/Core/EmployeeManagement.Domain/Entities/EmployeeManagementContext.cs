@@ -42,6 +42,9 @@ public partial class EmployeeManagementContext : DbContext
             entity.HasIndex(e => e.EmailId, "UQ__Employee__A9D10534CB726610").IsUnique();
 
             entity.Property(e => e.Client).HasMaxLength(50);
+            entity.Property(e => e.ContactNo)
+                .HasMaxLength(15)
+                .IsUnicode(false);
             entity.Property(e => e.CreatedBy)
                 .HasMaxLength(10)
                 .IsFixedLength();

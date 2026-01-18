@@ -21,6 +21,8 @@ namespace EmployeeManagement.Application.Commands.AddEmployee
         }
         public async Task<Result> Handle(CreateEmployeeCommand request, CancellationToken cancellationToken)
         {
+
+
             //var existingEmployee =Task.WhenAll( _employeeRepository.GetEmployeeByIdAsync(request.Employee.EmailId, cancellationToken));
             var existingEmployee = await _employeeRepository.GetEmployeeByIdAsync(request.Employee.EmailId, cancellationToken);
             if (existingEmployee != null)

@@ -19,7 +19,7 @@ public partial class Employee
 
     public bool? Status { get; set; }
 
-    public long ContactNo { get; set; }
+    public string ContactNo { get; set; } = null!;
 
     public string? EmployeeType { get; set; }
 

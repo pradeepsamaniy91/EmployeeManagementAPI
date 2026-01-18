@@ -17,7 +17,7 @@ public class EmployeeDto
 
     public bool? Status { get; set; }
 
-    public long ContactNo { get; set; }
+    public string ContactNo { get; set; }
 
     public string? EmployeeType { get; set; }
 

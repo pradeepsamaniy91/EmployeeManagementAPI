@@ -11,11 +11,16 @@ namespace EmployeeManagement.Application.Dto.EmployeeDtos
         {
 
             RuleFor(x => x.FirstName).NotEmpty().MaximumLength(50);
-            RuleFor(x => x.EmailId).EmailAddress();
-            RuleFor(x => x.BillRate);
-            RuleFor(x => x.ContactNo).NotNull();
-            RuleFor(x => x.PayRate).NotNull();
-            RuleFor(x => x.PayRate).NotNull();
+            RuleFor(x => x.LastName).MaximumLength(50);
+            RuleFor(x => x.EmailId).NotEmpty().WithMessage("Email address is required.")
+            // Rule 2: Ensure the format is a valid email address
+            .EmailAddress().WithMessage("Enter valid email address is required.");
+            RuleFor(x => x.BillRate).NotNull().WithMessage("BillRate is required");
+            RuleFor(x => x.ContactNo).NotEmpty().WithMessage("Contact number is required.");
+            RuleFor(x => x.PayRate).NotNull().WithMessage("PayRate is required");
+            RuleFor(x => x.UserTypeId).NotNull().WithMessage("User TypeId is require");
+
+            
         }
     }
 
