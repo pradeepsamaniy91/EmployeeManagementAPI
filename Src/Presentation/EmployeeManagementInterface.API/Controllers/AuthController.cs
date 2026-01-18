@@ -10,6 +10,7 @@ using System.Security.Claims;
 
 namespace EmployeeManagementInterface.API.Controllers
 {
+
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
@@ -35,11 +36,11 @@ namespace EmployeeManagementInterface.API.Controllers
 
             var user = from e in _employeeManagementContext.Employees
                        join u in _employeeManagementContext.Users on e.EmpId equals u.EmpId
-                       where e.EmailId == loginModel.UserEmail && e.Password == loginModel.Password
+                       where e.EmailId == loginModel.UserEmail && e.Password == loginModel.Password && e.IsActive == "1"
                        select new { e.EmpId, e.EmailId, u.IsActive, u.UserTypeId, };
 
 
-            if (user.FirstOrDefault().EmailId is null)
+            if (user is null)
                 return BadRequest("Invalid username or password"); 
 
             var claims = new List<Claim>

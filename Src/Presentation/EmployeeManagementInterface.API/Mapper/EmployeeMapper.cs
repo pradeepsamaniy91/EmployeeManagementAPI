@@ -12,7 +12,6 @@ namespace EmployeeManagementInterface.API.Mapper
                 LastName= dto.LastName,
                 EmailId = dto.EmailId,
                 Gender = dto.Gender,               
-                Status = dto.Status,
                 ContactNo = dto.ContactNo,
                 EmployeeType = dto.EmployeeType,
                 BillRate = dto.BillRate,

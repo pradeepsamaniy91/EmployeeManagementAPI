@@ -8,9 +8,12 @@ using EmployeeManagement.Domain.Interfaces;
 using EmployeeManagement.Infrastructure.Extension;
 using EmployeeManagement.Infrastructure.Persistence;
 using FluentValidation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using NLog.Web;
+using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
@@ -41,29 +44,40 @@ builder.Services.AddLogging(loggingbuilders =>
 builder.Services.EmployeeManagementDependencies();
 builder.Services.AddInfaDependencies(constr);
 
-// Program.cs or Startup.cs
-// registers Scoped by default
+//Addind JWT Authentication
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes("superSecretKey@3456543hfjklsujhfkgflglfj"))
+        };
+    });
+//Adding Role
+builder.Services.AddAuthorization(options => { options.AddPolicy("RequireAdmin", policy => policy.RequireRole("1", "2", "3")); });
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("RequireAdmin", policy => policy.RequireRole("1", "2", "3"));
+});
+
+//JWT ends
 
 //Add Policy
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll",
         policy => policy
-            .AllowAnyOrigin()
+            .SetIsOriginAllowed(origin => true) // Correct way to allow all with credentials
             .AllowAnyMethod()
-            .AllowAnyHeader());
+            .AllowAnyHeader()
+            .AllowCredentials());
 });
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AngularPolicy", policy =>
-    {
-        policy.WithOrigins("http://localhost:4200") // Must be explicit
-              .AllowAnyHeader()
-              .AllowAnyMethod()
-              .AllowCredentials(); // Required for 'include' credentials mode
-    });
-});
 
 builder.Services.AddEndpointsApiExplorer();
 
@@ -89,8 +103,10 @@ if (app.Environment.IsDevelopment())
 }
 app.UseSwagger();   // Serves the JSON endpoint
 app.UseSwaggerUI();
-app.UseCors("AngularPolicy");
+app.UseCors("AllowAll");
 app.UseHttpsRedirection();
+app.UseAuthentication(); // Must be before UseAuthorization
+app.UseAuthorization();
 app.MapControllers();
 app.Run();
 

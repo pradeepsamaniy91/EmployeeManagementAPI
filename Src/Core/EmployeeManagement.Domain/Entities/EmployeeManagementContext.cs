@@ -27,10 +27,6 @@ public partial class EmployeeManagementContext : DbContext
 
     public virtual DbSet<WorkLog> WorkLogs { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=LAPTOP-4V0QV0VF\\SQLEXPRESS;Initial Catalog=EmployeeManagement;Integrated Security=True;MultipleActiveResultSets=True;Encrypt=False");
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Employee>(entity =>
@@ -63,12 +59,12 @@ public partial class EmployeeManagementContext : DbContext
             entity.Property(e => e.IsActive)
                 .HasMaxLength(1)
                 .IsUnicode(false)
-                .IsFixedLength();
+                .IsFixedLength()
+                .HasDefaultValueSql("((1))", "is_Active");
             entity.Property(e => e.LastName).HasMaxLength(150);
             entity.Property(e => e.LastUpdatedBy).HasMaxLength(50);
             entity.Property(e => e.Password).HasMaxLength(32);
             entity.Property(e => e.Reference).HasMaxLength(50);
-            entity.Property(e => e.Status).HasDefaultValue(true, "DF__Employee__IsActi__5070F446");
             entity.Property(e => e.UpdatedOn).HasColumnType("datetime");
         });
 

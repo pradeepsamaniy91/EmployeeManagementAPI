@@ -4,17 +4,19 @@ using EmployeeManagement.Domain.ValueObjects;
 using EmployeeManagementInterface.API.Mapper;
 using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 namespace EmployeeManagementInterface.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+  
     public class EmployeeController : ControllerBase
     {
         private readonly IMediator _mediator;
         private readonly IValidator<EmployeeDto> _validator;
         private readonly ILogger<EmployeeController> _iLogger;
-
+        
         public EmployeeController(IValidator<EmployeeDto> validator, IMediator mediator, ILogger<EmployeeController> iLogger)
         {
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));

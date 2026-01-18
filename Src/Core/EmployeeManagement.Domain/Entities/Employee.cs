@@ -17,8 +17,6 @@ public partial class Employee
 
     public string? Gender { get; set; }
 
-    public bool? Status { get; set; }
-
     public string ContactNo { get; set; } = null!;
 
     public string? EmployeeType { get; set; }

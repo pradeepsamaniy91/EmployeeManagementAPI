@@ -11,8 +11,7 @@ namespace EmployeeManagement.Application.Mapper
                 FirstName = dto.FirstName,
                 LastName= dto.LastName,
                 EmailId = dto.EmailId,
-                Gender = dto.Gender,               
-                Status = dto.Status,
+                Gender = dto.Gender,             
                 Password = $"{dto.FirstName}{dto.ContactNo}", // In real scenarios, ensure to hash passwords and not use default ones.
                 ContactNo = dto.ContactNo,
                 EmployeeType = dto.EmployeeType,

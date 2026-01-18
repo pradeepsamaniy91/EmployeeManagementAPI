@@ -1,10 +1,12 @@
 ﻿using EmployeeManagement.Application.Mapper;
+using EmployeeManagement.Application.Static;
 using EmployeeManagement.Domain.Entities;
 using EmployeeManagement.Domain.Interfaces;
 using EmployeeManagement.Domain.ValueObjects;
 using MediatR;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Text;
 
 namespace EmployeeManagement.Application.Commands.AddEmployee
@@ -21,8 +23,13 @@ namespace EmployeeManagement.Application.Commands.AddEmployee
         }
         public async Task<Result> Handle(CreateEmployeeCommand request, CancellationToken cancellationToken)
         {
+            var usertypeid = StaticUserRole.FromId(request.Employee.UserTypeId);
 
-
+            if (usertypeid==null)
+            {
+                return Result.Failure("Invalid User Type.");
+            }
+            
             //var existingEmployee =Task.WhenAll( _employeeRepository.GetEmployeeByIdAsync(request.Employee.EmailId, cancellationToken));
             var existingEmployee = await _employeeRepository.GetEmployeeByIdAsync(request.Employee.EmailId, cancellationToken);
             if (existingEmployee != null)
