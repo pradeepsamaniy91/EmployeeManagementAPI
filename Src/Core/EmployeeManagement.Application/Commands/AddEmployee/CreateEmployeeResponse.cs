@@ -5,7 +5,7 @@ using System.Text;
 namespace EmployeeManagement.Application.Commands.AddEmployee;
 
 public record CreateEmployeeResponse(
-    bool Success,
+    bool IsSuccess,
     string EmployeeId,
-    string EmailAddress
+    string Message
 );

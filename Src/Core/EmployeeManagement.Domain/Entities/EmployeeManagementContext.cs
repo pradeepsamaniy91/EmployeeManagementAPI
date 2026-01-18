@@ -21,8 +21,6 @@ public partial class EmployeeManagementContext : DbContext
 
     public virtual DbSet<MonthlyAttendanceSummary> MonthlyAttendanceSummaries { get; set; }
 
-    public virtual DbSet<RefreshToken> RefreshTokens { get; set; }
-
     public virtual DbSet<User> Users { get; set; }
 
     public virtual DbSet<UserRole> UserRoles { get; set; }
@@ -59,6 +57,10 @@ public partial class EmployeeManagementContext : DbContext
                 .HasMaxLength(1)
                 .IsUnicode(false)
                 .IsFixedLength();
+            entity.Property(e => e.IsActive)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength();
             entity.Property(e => e.LastName).HasMaxLength(150);
             entity.Property(e => e.LastUpdatedBy).HasMaxLength(50);
             entity.Property(e => e.Password).HasMaxLength(32);
@@ -87,21 +89,6 @@ public partial class EmployeeManagementContext : DbContext
                 .ToView("MonthlyAttendanceSummary");
         });
 
-        modelBuilder.Entity<RefreshToken>(entity =>
-        {
-            entity.ToTable("RefreshToken");
-
-            entity.HasIndex(e => e.EmailId, "UQ__RefreshT__7ED91AEE46F04E71").IsUnique();
-
-            entity.Property(e => e.Id).HasColumnName("ID");
-            entity.Property(e => e.EmailId)
-                .HasMaxLength(100)
-                .IsUnicode(false)
-                .HasColumnName("EmailID");
-            entity.Property(e => e.RefreshToken1).HasColumnName("RefreshToken");
-            entity.Property(e => e.RefreshTokenExpiryTime).HasColumnType("datetime");
-        });
-
         modelBuilder.Entity<User>(entity =>
         {
             entity.HasKey(e => e.UserId).HasName("PK__Users__1788CC4C9C5CE200");
@@ -115,6 +102,10 @@ public partial class EmployeeManagementContext : DbContext
                 .HasMaxLength(256)
                 .HasDefaultValue("unique", "DF_Users_Email");
             entity.Property(e => e.IsActive).HasDefaultValue(true, "DF__Users__IsActive__367C1819");
+            entity.Property(e => e.RefreshToken).IsUnicode(false);
+            entity.Property(e => e.TokenExpirationTime).HasColumnType("datetime");
+            entity.Property(e => e.UserCreatedOn).HasColumnType("datetime");
+            entity.Property(e => e.UserUpdatedOn).HasColumnType("datetime");
 
             entity.HasOne(d => d.UserType).WithMany(p => p.Users)
                 .HasForeignKey(d => d.UserTypeId)

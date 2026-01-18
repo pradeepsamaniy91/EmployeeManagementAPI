@@ -42,8 +42,8 @@ namespace EmployeeManagement.Application.Commands.AddEmployee
                 var user = UserMapper.ToUser(request.Employee,employe.EmpId);
                 await _userRepository.CreateUser(user, cancellationToken);
             }
-
-            return Result.Success();
+            employe.Password = "*****";
+            return Result.Success(employe);
         }
     }
 }

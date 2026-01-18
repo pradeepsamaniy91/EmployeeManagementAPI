@@ -33,6 +33,8 @@ public partial class Employee
 
     public string? Reference { get; set; }
 
+    public string? IsActive { get; set; }
+
     public DateOnly HireDate { get; set; }
 
     public DateOnly? EndDate { get; set; }

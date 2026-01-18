@@ -34,18 +34,18 @@ namespace EmployeeManagementInterface.API.Controllers
 
             var principal = _tokenService.GetPrincipalFromExpiredToken(accessToken);
             var username = principal.Identity.Name; //this is mapped to the Name claim by default
-
+            
             //var user = _employeeManagementContext.LoginModels.SingleOrDefault(u => u.UserName == username);
-            var refreshT =_employeeManagementContext.RefreshTokens.Where(t=>t.EmailId== username).FirstOrDefault();
+            var refreshT =_employeeManagementContext.Users.Where(t=>t.Email== username).FirstOrDefault();
 
-            if (refreshT is null || refreshT.RefreshToken1 != refreshToken || refreshT.RefreshTokenExpiryTime <= DateTime.Now)
+            if (refreshT is null || refreshT.RefreshToken != refreshToken || refreshT.TokenExpirationTime <= DateTime.Now)
                 return BadRequest("Invalid client request");
 
             var newAccessToken = _tokenService.GenerateAccessToken(principal.Claims);
             var newRefreshToken = _tokenService.GenerateRefreshToken();
 
 
-            refreshT.RefreshToken1 = newRefreshToken;
+            refreshT.RefreshToken = newRefreshToken;
             _employeeManagementContext.SaveChanges();
 
             return Ok(new AuthenticatedResponse()
@@ -61,10 +61,10 @@ namespace EmployeeManagementInterface.API.Controllers
         {
             var username = User.Identity.Name;
 
-            var user = _employeeManagementContext.RefreshTokens.SingleOrDefault(u => u.EmailId == username);
+            var user = _employeeManagementContext.Users.SingleOrDefault(u => u.Email == username);
             if (user == null) return BadRequest();
 
-            user.RefreshToken1 = null;
+            user.RefreshToken = null;
 
             _employeeManagementContext.SaveChanges();
 

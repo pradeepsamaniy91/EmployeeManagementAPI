@@ -17,7 +17,8 @@ namespace EmployeeManagement.Application.Mapper
                 DisplayName = $"{employeeDto.FirstName} {employeeDto.LastName}",               
                 Email = employeeDto.EmailId,
                 IsActive = true,
-                UserTypeId = employeeDto.UserTypeId
+                UserTypeId = employeeDto.UserTypeId,
+                UserCreatedOn = DateTime.Now,
             };
         }
     }

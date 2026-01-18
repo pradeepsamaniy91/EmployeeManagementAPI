@@ -54,7 +54,16 @@ builder.Services.AddCors(options =>
             .AllowAnyHeader());
 });
 
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AngularPolicy", policy =>
+    {
+        policy.WithOrigins("http://localhost:4200") // Must be explicit
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials(); // Required for 'include' credentials mode
+    });
+});
 
 builder.Services.AddEndpointsApiExplorer();
 
@@ -80,7 +89,7 @@ if (app.Environment.IsDevelopment())
 }
 app.UseSwagger();   // Serves the JSON endpoint
 app.UseSwaggerUI();
-app.UseCors("AllowAll");
+app.UseCors("AngularPolicy");
 app.UseHttpsRedirection();
 app.MapControllers();
 app.Run();

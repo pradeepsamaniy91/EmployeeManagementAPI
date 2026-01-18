@@ -41,7 +41,7 @@ namespace EmployeeManagementInterface.API.Controllers
             _iLogger.LogInformation("Create Employee API validation success.................................Pradeep");
             var employeeResult = await _mediator.Send(new CreateEmployeeCommand(request));
             _iLogger.LogInformation("Create Employee API Mediator Send success.respones................................Pradeep",employeeResult.IsSuccess);
-            return employeeResult.IsSuccess ? Ok("Employee created successfully") : BadRequest(employeeResult);
+            return employeeResult.IsSuccess ? Ok(employeeResult) : BadRequest(employeeResult);
         }
     }
 }

@@ -17,14 +17,14 @@ namespace EmployeeManagementInterface.API.Controllers
         /// <summary>
         /// This controller Need to correct dont expose the DbContext directly
         /// </summary>
-        private readonly EmployeeManagementContext _userContext;
+        private readonly EmployeeManagementContext _employeeManagementContext;
         private readonly ITokenService _tokenService;
-        public AuthController(EmployeeManagementContext userContext, ITokenService tokenService)
+        public AuthController(EmployeeManagementContext employeeManagementContext, ITokenService tokenService)
         {
-            _userContext = userContext ?? throw new ArgumentNullException(nameof(userContext));
+            _employeeManagementContext = employeeManagementContext ?? throw new ArgumentNullException(nameof(employeeManagementContext));
             _tokenService = tokenService ?? throw new ArgumentNullException(nameof(tokenService));
         }
-        
+
         [HttpPost, Route("login")]
         public IActionResult Login([FromBody] LoginModel loginModel)
         {
@@ -33,14 +33,14 @@ namespace EmployeeManagementInterface.API.Controllers
                 return BadRequest("Invalid client request");
             }
 
-            var user = from e in _userContext.Employees
-                        join u in _userContext.Users on e.EmpId equals u.EmpId
+            var user = from e in _employeeManagementContext.Employees
+                       join u in _employeeManagementContext.Users on e.EmpId equals u.EmpId
                        where e.EmailId == loginModel.UserEmail && e.Password == loginModel.Password
-                        select new { e.EmpId,e.EmailId, u.IsActive,u.UserTypeId, };
+                       select new { e.EmpId, e.EmailId, u.IsActive, u.UserTypeId, };
 
-            
+
             if (user.FirstOrDefault().EmailId is null)
-                return Unauthorized();
+                return BadRequest("Invalid username or password"); 
 
             var claims = new List<Claim>
         {
@@ -49,33 +49,23 @@ namespace EmployeeManagementInterface.API.Controllers
         };
             var accessToken = _tokenService.GenerateAccessToken(claims);
             var refreshToken = _tokenService.GenerateRefreshToken();
-            var refreshTokenCheck= _userContext.RefreshTokens.FirstOrDefault(r => r.EmailId == loginModel.UserEmail);
-            if (refreshTokenCheck == null)
-                {
-                RefreshToken newRefreshToken = new RefreshToken
-                {
-                    EmailId = loginModel.UserEmail,
-                    RefreshToken1 = refreshToken,
-                    RefreshTokenExpiryTime = DateTime.Now.AddDays(1)
-                };
-                _userContext.RefreshTokens.Add(newRefreshToken);
-                _userContext.SaveChanges();
-            }
-            else
+            var userDetail = _employeeManagementContext.Users.FirstOrDefault(r => r.Email == loginModel.UserEmail);
+            if (userDetail is not null)
             {
-                refreshTokenCheck.RefreshToken1 = refreshToken;
-                refreshTokenCheck.RefreshTokenExpiryTime = DateTime.Now.AddDays(1);
-                _userContext.RefreshTokens.Update(refreshTokenCheck);
+
+                userDetail.RefreshToken = refreshToken;
+                userDetail.TokenExpirationTime = DateTime.Now.AddDays(1);
+                _employeeManagementContext.Users.Update(userDetail);
+                _employeeManagementContext.SaveChanges();
             }
-            //user.RefreshToken = refreshToken;
-            //user.RefreshTokenExpiryTime = DateTime.Now.AddDays(1); //token will expire in a Day
-            //_employeeManagementContext.SaveChanges();
+           
             return Ok(new AuthenticatedResponse
             {
                 Token = accessToken,
                 RefreshToken = refreshToken,
-                Role= user.FirstOrDefault()?.UserTypeId.ToString()
+                Role = user.FirstOrDefault()?.UserTypeId.ToString()
             });
         }
+       
     }
 }

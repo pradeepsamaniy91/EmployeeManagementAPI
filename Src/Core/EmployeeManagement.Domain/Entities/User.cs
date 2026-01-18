@@ -17,6 +17,14 @@ public partial class User
 
     public int? UserTypeId { get; set; }
 
+    public string? RefreshToken { get; set; }
+
+    public DateTime? TokenExpirationTime { get; set; }
+
+    public DateTime? UserCreatedOn { get; set; }
+
+    public DateTime? UserUpdatedOn { get; set; }
+
     public virtual UserRole? UserType { get; set; }
 
     public virtual ICollection<WorkLog> WorkLogs { get; set; } = new List<WorkLog>();
