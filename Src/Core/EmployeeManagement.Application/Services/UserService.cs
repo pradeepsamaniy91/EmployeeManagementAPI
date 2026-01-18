@@ -23,22 +23,26 @@ namespace EmployeeManagement.Application.Services
             return user;
         }
 
-        Task<User?> IUserRepository.GetUserAsync()
-        {
-            throw new NotImplementedException();
-        }
+       
 
-        public async Task<User?> GetUserById(long empId, CancellationToken cancellationToken)
+        public async Task<User?> GetUserByEmailId(string emailId, CancellationToken cancellationToken)
         {
             // Use FirstOrDefaultAsync and pass the cancellationToken
             return await _context.Users
-                .FirstOrDefaultAsync(u => u.EmpId == empId, cancellationToken);
+                .FirstOrDefaultAsync(u => u.Email == emailId, cancellationToken);
         }
-
-
-        Task<List<User?>> IUserRepository.GetUsersByIDAndPasswordAsync(string userName, string password, CancellationToken cancellationToken)
+        public async Task<User?> GetUserById(long userId, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            // Use FirstOrDefaultAsync and pass the cancellationToken
+            return await _context.Users
+                .FirstOrDefaultAsync(u => u.UserId == userId, cancellationToken);
         }
+        public async Task<User?> GetUserByEmployeeId(long employeeId, CancellationToken cancellationToken)
+        {
+            // Use FirstOrDefaultAsync and pass the cancellationToken
+            return await _context.Users
+                .FirstOrDefaultAsync(u => u.EmpId == employeeId, cancellationToken);
+        }       
+
     }
 }
