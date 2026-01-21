@@ -36,7 +36,7 @@ namespace EmployeeManagementInterface.API.Controllers
 
             var user = from e in _employeeManagementContext.Employees
                        join u in _employeeManagementContext.Users on e.EmpId equals u.EmpId
-                       where e.EmailId == loginModel.UserEmail && e.Password == loginModel.Password && e.IsActive == "1"
+                       where e.EmailId == loginModel.Username && e.Password == loginModel.Password && e.IsActive == "1"
                        select new { e.EmpId, e.EmailId, u.IsActive, u.UserTypeId, };
 
 
@@ -45,12 +45,12 @@ namespace EmployeeManagementInterface.API.Controllers
 
             var claims = new List<Claim>
         {
-            new Claim(ClaimTypes.Name, loginModel.UserEmail),
+            new Claim(ClaimTypes.Name, loginModel.Username),
             new Claim(ClaimTypes.Role, user?.FirstOrDefault()?.UserTypeId?.ToString())
         };
             var accessToken = _tokenService.GenerateAccessToken(claims);
             var refreshToken = _tokenService.GenerateRefreshToken();
-            var userDetail = _employeeManagementContext.Users.FirstOrDefault(r => r.Email == loginModel.UserEmail);
+            var userDetail = _employeeManagementContext.Users.FirstOrDefault(r => r.Email == loginModel.Username);
             if (userDetail is not null)
             {
 

@@ -35,7 +35,7 @@ namespace EmployeeManagementInterface.API.Controllers
             var principal = _tokenService.GetPrincipalFromExpiredToken(accessToken);
             var username = principal.Identity.Name; //this is mapped to the Name claim by default
             
-            //var user = _employeeManagementContext.LoginModels.SingleOrDefault(u => u.UserName == username);
+            //var user = _employeeManagementContext.LoginModels.SingleOrDefault(u => u.Username == username);
             var refreshT =_employeeManagementContext.Users.Where(t=>t.Email== username).FirstOrDefault();
 
             if (refreshT is null || refreshT.RefreshToken != refreshToken || refreshT.TokenExpirationTime <= DateTime.Now)
