@@ -3,6 +3,7 @@ using EmployeeManagement.Application.Dto.AddTime;
 using EmployeeManagement.Application.Dto.EmployeeDtos;
 using EmployeeManagement.Application.Queries.GetEmployeeByID;
 using EmployeeManagement.Application.Queries.GetTimesheet;
+using EmployeeManagementInterface.API.ModelsView;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -26,7 +27,7 @@ namespace EmployeeManagementInterface.API.Controllers
         }
 
         [HttpGet("EmployeeByEmailId")]
-        public async Task<IActionResult> Get(string emailAddress)
+        public async Task<IActionResult> Get([FromQuery] string emailAddress)
         {
             _iLogger.LogInformation("Fetching employee details for email: {EmailAddress}", emailAddress);
 
@@ -37,9 +38,9 @@ namespace EmployeeManagementInterface.API.Controllers
             return employeeResult.IsSuccess? Ok(employeeResult.Value): BadRequest(employeeResult.Error);
         }
         [HttpGet("Timesheet")]
-        public async Task<IActionResult> GetUsersTimesheet(int month,int year,CancellationToken cancellationToken)
+        public async Task<IActionResult> GetUsersTimesheet([FromQuery] TimesheetModel request)
         {
-            var employeeResult = await _mediator.Send(new GetUserTimesheetQuery(month,year));
+            var employeeResult = await _mediator.Send(new GetUserTimesheetQuery(request.Month, request.Year));
 
             return employeeResult.IsSuccess ? Ok(employeeResult.Value) : BadRequest(employeeResult.Error);
         }
