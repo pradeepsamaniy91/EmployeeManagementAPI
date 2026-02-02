@@ -1,5 +1,7 @@
 ﻿using EmployeeManagement.Application.Commands.AddEmployee;
 using EmployeeManagement.Application.Dto.EmployeeDtos;
+using EmployeeManagement.Application.Queries.GetEmployeeByID;
+using EmployeeManagement.Application.Queries.GetEmployees;
 using EmployeeManagement.Domain.ValueObjects;
 using EmployeeManagementInterface.API.Mapper;
 using FluentValidation;
@@ -23,12 +25,26 @@ namespace EmployeeManagementInterface.API.Controllers
             _validator = validator ?? throw new ArgumentNullException(nameof(validator));
             _iLogger = iLogger;
         }
-        [HttpGet("Test")]
-        public async Task<IActionResult> Get()
+        [HttpGet("GetEmpById")]
+        public async Task<IActionResult> GetByEmailId(string email)
         {
-            _iLogger.LogInformation("Test API called.................................Pradeep");
+            if (email == null)
+            {
+                return BadRequest("EmailId is null");
+            }
+            var employeeResult = await _mediator.Send(new GetEmployeeByIdQuery(email));
 
-            return Ok("Sucess");
+            return employeeResult.IsSuccess ? Ok(employeeResult) : BadRequest(employeeResult);
+            
+        }
+        [HttpGet("GetEmpployess")]
+        public async Task<IActionResult> GetAllEmployess()
+        {
+            
+            var employeeResult = await _mediator.Send(new GetEmployeesQuery());
+
+            return employeeResult.IsSuccess ? Ok(employeeResult) : BadRequest(employeeResult);
+
         }
 
         [HttpPost("create")]

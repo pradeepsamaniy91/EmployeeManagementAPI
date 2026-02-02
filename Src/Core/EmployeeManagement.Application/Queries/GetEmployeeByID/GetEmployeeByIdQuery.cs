@@ -6,6 +6,6 @@ using System.Text;
 
 namespace EmployeeManagement.Application.Queries.GetEmployeeByID
 {
-    public record GetEmployeeByIdQuery(string EmailId):IQuery<Employee?>;
+    public record GetEmployeeByIdQuery(string EmailId):IQuery<EmployeeResponse?>;
     
 }

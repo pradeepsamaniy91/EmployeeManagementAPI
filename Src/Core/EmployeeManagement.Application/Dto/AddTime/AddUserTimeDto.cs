@@ -4,6 +4,6 @@ using System.Text;
 
 namespace EmployeeManagement.Application.Dto.AddTime
 {
-    public record AddUserTimeDto(long userId,DateOnly Date,decimal HoursWorked, string Description,long CreatedByUserID,long UpdatedByUserId);
+    public record AddUserTimeDto(long userId,DateOnly Date,decimal HoursWorked, string? Description,long CreatedByUserID,long? UpdatedByUserId);
 
 }

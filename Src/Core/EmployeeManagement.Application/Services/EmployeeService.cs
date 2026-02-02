@@ -54,9 +54,10 @@ public class EmployeeService : IEmployeeRepository
                                 .FirstOrDefaultAsync(e => e.EmpId == id);
     }
 
-    Task<Employee> IEmployeeRepository.GetEmployees()
+    public async Task<List<Employee>> GetEmployees()
     {
-        throw new NotImplementedException();
+        // Fetches all employees as a list asynchronously
+        return await _context.Employees.ToListAsync();
     }
 
     Task<Employee?> IEmployeeRepository.UpdateEmployeeAsync(Employee employee, CancellationToken cancellationToken)

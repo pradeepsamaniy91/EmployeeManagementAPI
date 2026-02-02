@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 
 namespace EmployeeManagement.Infrastructure.Persistence.Repositories
 {
@@ -50,9 +51,10 @@ namespace EmployeeManagement.Infrastructure.Persistence.Repositories
             }
         }
 
-        Task<Employee> IEmployeeRepository.GetEmployees()
+        public async Task<List<Employee?>> GetEmployees()
         {
-            throw new NotImplementedException();
+            return await _context?.Employees?.ToListAsync();
+
         }
 
         Task<Employee> IEmployeeRepository.UpdateEmployeeAsync(Employee employee, CancellationToken cancellationToken=default)
