@@ -59,23 +59,19 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 //Adding Role
-builder.Services.AddAuthorization(options => { options.AddPolicy("RequireAdmin", policy => policy.RequireRole("1", "2", "3")); });
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("RequireAdmin", policy => policy.RequireRole("1", "2", "3"));
-});
+builder.Services.AddAuthorization(options => { options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin")); });
 
 //JWT ends
 
 //Add Policy
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll",
-        policy => policy
-            .SetIsOriginAllowed(origin => true) // Correct way to allow all with credentials
-            .AllowAnyMethod()
-            .AllowAnyHeader()
-            .AllowCredentials());
+    options.AddPolicy("EnableCORS", builder =>
+    {
+        builder.AllowAnyOrigin()
+        .AllowAnyHeader()
+        .AllowAnyMethod();
+    });
 });
 
 
@@ -103,7 +99,8 @@ if (app.Environment.IsDevelopment())
 }
 app.UseSwagger();   // Serves the JSON endpoint
 app.UseSwaggerUI();
-app.UseCors("AllowAll");
+app.UseCors("AdminOnly");
+app.UseCors("EnableCORS");
 app.UseHttpsRedirection();
 app.UseAuthentication(); // Must be before UseAuthorization
 app.UseAuthorization();

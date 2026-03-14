@@ -5,6 +5,8 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>9ccdb59f-bb0c-4a59-9542-508412c1ca76</UserSecretsId>
+    <AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
+    <AllowUntrustedCertificate>true</AllowUntrustedCertificate>
   </PropertyGroup>
 
   <ItemGroup>

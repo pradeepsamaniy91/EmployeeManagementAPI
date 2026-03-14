@@ -37,6 +37,7 @@ namespace EmployeeManagementInterface.API.Controllers
             return employeeResult.IsSuccess ? Ok(employeeResult) : BadRequest(employeeResult);
             
         }
+        
         [HttpGet("GetEmpployess")]
         public async Task<IActionResult> GetAllEmployess()
         {
