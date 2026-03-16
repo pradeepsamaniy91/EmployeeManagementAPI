@@ -3,6 +3,7 @@ using EmployeeManagement.Application.Dto.AddTime;
 using EmployeeManagement.Application.Dto.EmployeeDtos;
 using EmployeeManagement.Application.Queries.GetEmployeeByID;
 using EmployeeManagement.Application.Queries.GetTimesheet;
+using EmployeeManagementInterface.API.Attributes;
 using EmployeeManagementInterface.API.ModelsView;
 using FluentValidation;
 using MediatR;
@@ -13,7 +14,9 @@ using System.ComponentModel.DataAnnotations;
 namespace EmployeeManagementInterface.API.Controllers
 {
     [Route("api/[controller]")]
+    [Role("1")]
     [ApiController]
+
     public class TimesheetController : ControllerBase
     {
         private readonly IMediator _mediator;
