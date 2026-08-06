@@ -78,6 +78,7 @@ namespace EmployeeManagementInterface.API.Controllers
             return employeeResult.IsSuccess ? Ok(employeeResult) : BadRequest(employeeResult);
         }
         [HttpPatch("updateEmp")]
+        [RoleAttribute("1")]
         public async Task<IActionResult> UpdateEmployee(EmployeeDto request)
         {
             _iLogger.LogInformation("Create Employee API called.................................Pradeep");
@@ -93,6 +94,7 @@ namespace EmployeeManagementInterface.API.Controllers
         }
 
         [HttpDelete("remove")]
+        [RoleAttribute("1")]
         public async Task<IActionResult> RemoveEmployee(long employeeId)
         {
             
