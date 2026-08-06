@@ -15,7 +15,7 @@ public class EmployeeService : IEmployeeRepository
         _context = context;
     }
 
-    public async Task<Employee> CreateEmployeeAsync(Employee? employee)
+    public async Task<Employee> UpdateEmployeeAsync(Employee? employee,CancellationToken cancellationToken)
     {
         var employeeObj = new Employee();
         try
@@ -59,9 +59,10 @@ public class EmployeeService : IEmployeeRepository
         // Fetches all employees as a list asynchronously
         return await _context.Employees.ToListAsync();
     }
-
-    Task<Employee?> IEmployeeRepository.UpdateEmployeeAsync(Employee employee, CancellationToken cancellationToken)
+    public async Task<Employee?> RemoveEmployeeAsync(Employee employee, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        _context.Employees.Update(employee);   // Marks entity for deletion
+        await _context.SaveChangesAsync(cancellationToken);  // Await async save
+        return employee;
     }
 }

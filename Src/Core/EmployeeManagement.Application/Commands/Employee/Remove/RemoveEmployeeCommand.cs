@@ -8,8 +8,8 @@ namespace EmployeeManagement.Application.Commands.Employee.Remove
 {
     public class RemoveEmployeeCommand: IRequest<Result>
     {
-        public int EmployeeId { get; set; }
-        public RemoveEmployeeCommand(int employeeId)
+        public long EmployeeId { get; set; }
+        public RemoveEmployeeCommand(long employeeId)
         {
                 EmployeeId = employeeId;
         }

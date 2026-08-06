@@ -39,7 +39,7 @@ namespace EmployeeManagement.Application.Commands.Employee.AddEmployee
             var employeeEntity = EmployeeMapper.ToEmployee(request.Employee);
 
             
-            var employe= await _employeeRepository.CreateEmployeeAsync(employeeEntity);
+            var employe= await _employeeRepository.UpdateEmployeeAsync(employeeEntity,cancellationToken);
 
             User? userExist=await _userRepository.GetUserById(employe.EmpId, cancellationToken);
             if (userExist != null)

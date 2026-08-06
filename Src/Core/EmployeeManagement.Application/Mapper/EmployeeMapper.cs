@@ -25,6 +25,22 @@ namespace EmployeeManagement.Application.Mapper
                 CreatedOn = DateTime.Now
             };
         }
+        public static Employee ToUpdateEmployee(EmployeeDto dto,Employee employee)
+        {
+            employee.FirstName = dto.FirstName;
+            employee.LastName = dto.LastName;
+            employee.EmailId = dto.EmailId;
+            employee.Gender = dto.Gender;
+            employee.ContactNo = dto.ContactNo;
+            employee.EmployeeType = dto.EmployeeType;
+            employee.BillRate = dto.BillRate;
+            employee.PayRate = dto.PayRate;
+            employee.Client = dto.Client;
+            employee.Reference = dto.Reference;
+            employee.HireDate = dto.HireDate;
+            employee.UpdatedOn = DateTime.Now;
+            return employee;
+        }
         public static EmployeeResponse ToEmployeeResponse(Employee employee)
         {
             return new EmployeeResponse

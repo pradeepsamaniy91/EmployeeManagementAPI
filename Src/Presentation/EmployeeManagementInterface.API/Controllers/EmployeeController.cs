@@ -1,5 +1,6 @@
 ﻿using EmployeeManagement.Application.Commands.Employee.AddEmployee;
 using EmployeeManagement.Application.Commands.Employee.Remove;
+using EmployeeManagement.Application.Commands.Employee.UpdateEmployee;
 using EmployeeManagement.Application.Dto.EmployeeDtos;
 using EmployeeManagement.Application.Queries.GetEmployeeById;
 using EmployeeManagement.Application.Queries.GetEmployeeByID;
@@ -76,9 +77,23 @@ namespace EmployeeManagementInterface.API.Controllers
             _iLogger.LogInformation("Create Employee API Mediator Send success.respones................................Pradeep",employeeResult.IsSuccess);
             return employeeResult.IsSuccess ? Ok(employeeResult) : BadRequest(employeeResult);
         }
+        [HttpPatch("updateEmp")]
+        public async Task<IActionResult> UpdateEmployee(EmployeeDto request)
+        {
+            _iLogger.LogInformation("Create Employee API called.................................Pradeep");
+            var validationResult = _validator.Validate(request);  // Fluent Validation Applied
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(validationResult);
+            }
+            _iLogger.LogInformation("Update Employee API validation success.................................Pradeep");
+            var employeeResult = await _mediator.Send(new UpdateEmployeeCommand(request));
+            _iLogger.LogInformation("Employee Updated request", employeeResult.IsSuccess);
+            return employeeResult.IsSuccess ? Ok(employeeResult) : BadRequest(employeeResult);
+        }
 
-        [HttpPost("remove")]
-        public async Task<IActionResult> RemoveEmployee(int employeeId)
+        [HttpDelete("remove")]
+        public async Task<IActionResult> RemoveEmployee(long employeeId)
         {
             
             if (employeeId==null)

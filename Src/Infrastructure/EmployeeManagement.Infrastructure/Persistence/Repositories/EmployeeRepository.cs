@@ -17,14 +17,15 @@ namespace EmployeeManagement.Infrastructure.Persistence.Repositories
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
-        public async Task<Employee> CreateEmployeeAsync(Employee employee)
+        public async Task<Employee> UpdateEmployeeAsync(Employee employee)
         {
-            await _context.Employees.AddAsync(employee);
+            _context.Employees.Update(employee);   // Marks entity as Modified
             await _context.SaveChangesAsync();
             return employee;
         }
-       
-       
+
+
+
         public async Task<List<Employee?>> GetEmployees()
         {
             return await _context?.Employees?.ToListAsync();
@@ -47,9 +48,19 @@ namespace EmployeeManagement.Infrastructure.Persistence.Repositories
                     .FirstOrDefaultAsync(e => e.EmpId == id, cancellationToken);
         }
 
-        Task<Employee> IEmployeeRepository.UpdateEmployeeAsync(Employee employee, CancellationToken cancellationToken=default)
+        async Task<Employee> IEmployeeRepository.UpdateEmployeeAsync(Employee employee, CancellationToken cancellationToken=default)
         {
-            throw new NotImplementedException();
+            _context.Employees.Update(employee);   // Marks entity as Modified
+            await _context.SaveChangesAsync();
+            return employee;
+        }
+
+        async Task<Employee?> IEmployeeRepository.RemoveEmployeeAsync(Employee employee, CancellationToken cancellationToken)
+        {
+            
+            _context.Employees.Update(employee);   // Marks entity as Modified
+            await _context.SaveChangesAsync();
+            return employee;
         }
     }
 }
