@@ -1,11 +1,10 @@
 ﻿using EmployeeManagement.Application.Abstractions;
-using EmployeeManagement.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace EmployeeManagement.Application.Queries.GetEmployeeByID
+namespace EmployeeManagement.Application.Queries.GetEmployeeById
 {
-    public record GetEmployeeByIdQuery(string EmailId):IQuery<EmployeeResponse?>;
     
+    public record GetEmployeeByIdQuery(long EmpId) : IQuery<EmployeeResponse?>;
 }

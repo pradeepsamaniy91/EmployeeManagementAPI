@@ -23,38 +23,28 @@ namespace EmployeeManagement.Infrastructure.Persistence.Repositories
             await _context.SaveChangesAsync();
             return employee;
         }
-        public async Task<Employee?> GetAsync(long empId, CancellationToken cancellationToken=default)
-        {
-            // Use .AsNoTracking() for read-only queries to improve performance.
-            return await _context.Employees
-                .AsNoTracking()
-                .FirstOrDefaultAsync(e => e.EmpId == empId, cancellationToken);
-        }
-        public async Task<Employee?> GetEmployeeByIdAsync(string emailId, CancellationToken cancellationToken = default)
-        {
-            try
-            {
-                return await _context.Employees
-                    .AsNoTracking()
-                    .FirstOrDefaultAsync(e => e.EmailId == emailId, cancellationToken);
-            }
-            catch (OperationCanceledException)
-            {
-                // 2026 Best Practice: Task was canceled by the caller/user.
-                // Return null or rethrow based on your business logic.
-                return null;
-            }
-            catch (Exception ex)
-            {
-                // Log actual database/logic errors here
-                throw;
-            }
-        }
-
+       
+       
         public async Task<List<Employee?>> GetEmployees()
         {
             return await _context?.Employees?.ToListAsync();
 
+        }
+
+        async Task<Employee?> IEmployeeRepository.GetEmployeeByEmailIdAsync(string emailId, CancellationToken cancellationToken)
+        {
+          
+                return await _context.Employees
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(e => e.EmailId == emailId, cancellationToken);
+            
+        }
+
+       async Task<Employee?> IEmployeeRepository.GetEmployeeByIdAsync(long id, CancellationToken cancellationToken)
+        {
+            return await _context.Employees
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(e => e.EmpId == id, cancellationToken);
         }
 
         Task<Employee> IEmployeeRepository.UpdateEmployeeAsync(Employee employee, CancellationToken cancellationToken=default)

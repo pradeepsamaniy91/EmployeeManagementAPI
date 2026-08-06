@@ -32,7 +32,7 @@ public class EmployeeService : IEmployeeRepository
         }
     }
 
-    public async Task<Employee?> GetEmployeeByIdAsync(string emailId, CancellationToken cancellationToken)
+    public async Task<Employee?> GetEmployeeByEmailIdAsync(string emailId, CancellationToken cancellationToken)
     {
         Employee employee = null;
         try
@@ -48,7 +48,7 @@ public class EmployeeService : IEmployeeRepository
         }
     }
 
-    public async Task<Employee?> GetAsync(long id, CancellationToken cancellationToken=default)
+    public async Task<Employee?> GetEmployeeByIdAsync(long id, CancellationToken cancellationToken=default)
     {
         return await _context.Employees
                                 .FirstOrDefaultAsync(e => e.EmpId == id);

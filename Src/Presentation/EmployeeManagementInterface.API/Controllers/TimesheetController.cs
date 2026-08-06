@@ -3,6 +3,7 @@ using EmployeeManagement.Application.Dto.AddTime;
 using EmployeeManagement.Application.Dto.EmployeeDtos;
 using EmployeeManagement.Application.Queries.GetEmployeeByID;
 using EmployeeManagement.Application.Queries.GetTimesheet;
+using EmployeeManagementInterface.API.Attributes;
 using EmployeeManagementInterface.API.ModelsView;
 using FluentValidation;
 using MediatR;
@@ -25,13 +26,13 @@ namespace EmployeeManagementInterface.API.Controllers
             _validator = validator ?? throw new ArgumentNullException(nameof(validator));
             _iLogger = iLogger;
         }
-
+        [Role("1","2")]
         [HttpGet("EmployeeByEmailId")]
         public async Task<IActionResult> Get([FromQuery] string emailAddress)
         {
             _iLogger.LogInformation("Fetching employee details for email: {EmailAddress}", emailAddress);
 
-            var employeeResult = await _mediator.Send(new GetEmployeeByIdQuery(emailAddress));
+            var employeeResult = await _mediator.Send(new GetEmployeeByEmailIdQuery(emailAddress));
 
             _iLogger.LogInformation("Fetching employee details for email: {response}", employeeResult);
 

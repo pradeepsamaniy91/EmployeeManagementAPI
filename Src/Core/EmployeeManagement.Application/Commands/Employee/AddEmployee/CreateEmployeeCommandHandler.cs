@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Text;
 
-namespace EmployeeManagement.Application.Commands.AddEmployee
+namespace EmployeeManagement.Application.Commands.Employee.AddEmployee
 {
     public class CreateEmployeeCommandHandler : IRequestHandler<CreateEmployeeCommand, Result>
     {
@@ -31,7 +31,7 @@ namespace EmployeeManagement.Application.Commands.AddEmployee
             }
             
             //var existingEmployee =Task.WhenAll( _employeeRepository.GetEmployeeByIdAsync(request.Employee.EmailId, cancellationToken));
-            var existingEmployee = await _employeeRepository.GetEmployeeByIdAsync(request.Employee.EmailId, cancellationToken);
+            var existingEmployee = await _employeeRepository.GetEmployeeByEmailIdAsync(request.Employee.EmailId, cancellationToken);
             if (existingEmployee != null)
             {
                return Result.Failure("Employee with the same email already exists.");

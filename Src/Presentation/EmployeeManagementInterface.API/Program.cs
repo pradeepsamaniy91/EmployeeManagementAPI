@@ -19,7 +19,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
 builder.Services.AddMediatR(cfg =>
 {
-    cfg.RegisterServicesFromAssembly(typeof(GetEmployeeByIdQuery).Assembly);
+    cfg.RegisterServicesFromAssembly(typeof(GetEmployeeByEmailIdQuery).Assembly);
 });
 
 builder.Services.AddControllers();

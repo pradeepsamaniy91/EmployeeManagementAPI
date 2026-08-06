@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace EmployeeManagement.Application.Commands.AddEmployee;
+namespace EmployeeManagement.Application.Commands.Employee.AddEmployee;
 
 public record CreateEmployeeResponse(
     bool IsSuccess,

@@ -2,7 +2,7 @@
 using EmployeeManagement.Domain.ValueObjects;
 using MediatR;
 
-namespace EmployeeManagement.Application.Commands.AddEmployee;
+namespace EmployeeManagement.Application.Commands.Employee.AddEmployee;
 
 public class CreateEmployeeCommand : IRequest<Result>
 {
